@@ -24,19 +24,21 @@ watch([x, y], ([x, y]) => {
 
 const messageType = 'USER_XY'
 
+const debounce = 50
+
 debouncedWatch([x, y], () => {
     sendMessage.value({ type: messageType, userId: userId.value, userX: user.value.x, userY: user.value.y });
-}, { debounce: 200 });
+}, { debounce });
 
 const users = ref<any[]>([])
 
 watch(messages.value, async (newValue) => {
     const message = newValue[newValue.length - 1];
-    if (message.type === messageType) {
+    if (message.type === messageType && message.userId !== userId.value) {
         const user = {
             userId: message.userId,
-            x: message.userX,
-            y: message.userY,
+            x: message.userX + centerX.value,
+            y: message.userY + centerY.value,
         };
         const existingUserIndex = users.value?.findIndex((u) => {
             return u.userId === user.userId;
@@ -52,9 +54,13 @@ watch(messages.value, async (newValue) => {
 </script>
 
 <template>
-    <pre class="pointer-events-none select-none">{{ user }}</pre>
+    <pre class="pointer-events-none select-none">{{ { ...user, userId } }}</pre>
     <pre class="pointer-events-none select-none">{{ users }}</pre>
+    <div v-for="user in users" :key="user.userId" class="fixed transition-all"
+        :style="{ animationDuration: debounce + 'ms', left: user.x + 'px', top: user.y + 'px' }">
+        <Dot class="text-blue-500/90" />
+    </div>
     <div ref="el" :style="style" class="fixed cursor-grab">
-        <Dot ref="el" :style="style" class="text-red-500" />
+        <Dot ref="el" :style="style" class="text-red-500/90" />
     </div>
 </template>
