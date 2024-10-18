@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 
-defineProps({ color: { type: String, default: "black" } });
+const { r } = defineProps<{
+    r: number;
+}>();
 </script>
 
 <template>
-    <svg width="28" height="28">
-        <circle cx="14" cy="13" r="13" fill="currentColor" />
+    <svg :width="r * 2" :height="r * 2" class="">
+        <circle :cx="r" :cy="r" :r="r" fill="currentColor" />
     </svg>
 </template>

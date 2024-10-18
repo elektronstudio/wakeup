@@ -6,8 +6,10 @@ const el = ref<HTMLElement | null>(null)
 
 const { centerX, centerY } = useWindowCenter();
 
-const { x, y, style } = useDraggable(el, {
-    initialValue: { x: 0, y: 0 },
+const userR = 15
+
+const { x, y } = useDraggable(el, {
+    initialValue: { x: centerX.value - userR, y: centerY.value - userR },
 })
 
 const user = ref({ x: 0, y: 0 })
@@ -17,9 +19,10 @@ const { messages, sendMessage } = useMessages();
 const userId = useUserId();
 const userName = useUserName();
 
+
 watch([x, y], ([x, y]) => {
-    user.value.x = x - centerX.value
-    user.value.y = y - centerY.value
+    user.value.x = x - centerX.value + userR
+    user.value.y = y - centerY.value + userR
 })
 
 const messageType = 'USER_XY'
@@ -51,16 +54,32 @@ watch(messages.value, async (newValue) => {
     }
 });
 
+const circleRadius = 250
+const circlePadding = 100
+const svgSize = (circleRadius * 2) + (circlePadding * 2)
+const svgSizeHalf = svgSize / 2
+const viewBox = `-${svgSizeHalf} -${svgSizeHalf} ${svgSize} ${svgSize}`
+const left = computed(() => (centerX.value - svgSizeHalf) + 'px')
+const top = computed(() => (centerY.value - svgSizeHalf) + 'px')
+
+const userStyle = computed(() => ({ left: x.value + 'px', top: y.value + 'px' }))
 </script>
 
 <template>
-    <pre class="pointer-events-none select-none">{{ { ...user, userId } }}</pre>
-    <pre class="pointer-events-none select-none">{{ users }}</pre>
+
+    <svg :width="svgSize" :height="svgSize" :viewBox="viewBox" class="fixed border pointer-events-none"
+        :style="{ top, left }">
+        <circle :r="circleRadius" cx="0" cy="0" stroke="#777" stroke-width="2" fill="none" />
+        <circle r="2" fill="white" />
+    </svg>
+
+    <pre class="pointer-events-none select-none">{{ { left, top, user: { ...user, userId }, users } }}</pre>
+
     <div v-for="user in users" :key="user.userId" class="fixed transition-all"
-        :style="{ animationDuration: debounce + 'ms', left: user.x + 'px', top: user.y + 'px' }">
-        <Dot class="text-blue-500/90" />
+        :style="{ animationDuration: debounce * 4 + 'ms', left: user.x + 'px', top: user.y + 'px' }">
+        <Dot :r="15" class="text-blue-500/90" />
     </div>
-    <div ref="el" :style="style" class="fixed cursor-grab">
-        <Dot ref="el" :style="style" class="text-red-500/90" />
+    <div ref="el" :style="userStyle" class="fixed cursor-grab">
+        <Dot :r="15" class="text-red-500/90" />
     </div>
 </template>

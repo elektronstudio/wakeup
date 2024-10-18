@@ -5,10 +5,9 @@ export default {
 </script>
 
 <script setup lang="ts">
-type Props = {
+const { to } = defineProps<{
     to: string;
-};
-const { to } = defineProps<Props>();
+}>();
 </script>
 
 <template>
