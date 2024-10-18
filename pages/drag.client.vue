@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+import * as Tone from "tone";
 import { Circle, Polygon, Result } from "collisions";
 import { useUserId, useUserName } from '~/composables/user';
 
@@ -14,13 +14,11 @@ const { x, y } = useDraggable(el, {
     initialValue: { x: centerX.value - userRadius, y: centerY.value - userRadius },
 })
 
-const user = ref({ x: 0, y: 0 })
+const user = ref({ x: 0, y: 0, collides: undefined })
 
 const { messages, sendMessage } = useMessages();
 
 const userId = useUserId();
-const userName = useUserName();
-
 
 watch([x, y], ([x, y]) => {
     user.value.x = x - centerX.value + userRadius
@@ -34,17 +32,6 @@ const svgSizeHalf = svgSize / 2
 const viewBox = `-${svgSizeHalf} -${svgSizeHalf} ${svgSize} ${svgSize}`
 const left = computed(() => (centerX.value - svgSizeHalf) + 'px')
 const top = computed(() => (centerY.value - svgSizeHalf) + 'px')
-
-
-const circle = new Circle(0, 0, circleRadius);
-const result = new Result();
-
-const userCollides = ref(false)
-
-watch([x, y], () => {
-    const userCircle = new Circle(user.value.x, user.value.y, userRadius);
-    userCollides.value = userCircle.collides(circle);
-}, { immediate: true })
 
 const messageType = 'USER_XY'
 
@@ -75,8 +62,27 @@ watch(messages.value, async (newValue) => {
     }
 });
 
+const circle = new Circle(0, 0, circleRadius);
+
+watch([x, y], () => {
+    const userCircle = new Circle(user.value.x, user.value.y, userRadius);
+    user.value.collides = userCircle.collides(circle);
+}, { immediate: true })
+
 
 const userStyle = computed(() => ({ left: x.value + 'px', top: y.value + 'px' }))
+
+const a = ref(0);
+
+const onStart = async () => {
+    await Tone.start();
+    Tone.getTransport().scheduleRepeat((time) => {
+        Tone.getDraw().schedule(() => {
+            a.value += 1
+        }, time)
+    }, 1 / 60)
+    Tone.getTransport().start();
+};
 </script>
 
 <template>
@@ -87,8 +93,7 @@ const userStyle = computed(() => ({ left: x.value + 'px', top: y.value + 'px' })
         <circle r="2" fill="white" />
     </svg>
 
-    <pre
-        class="pointer-events-none select-none">{{ { userCollides, left, top, user: { ...user, userId }, users } }}</pre>
+    <pre class="pointer-events-none select-none">{{ { a, left, top, user: { ...user, userId }, users } }}</pre>
 
     <div v-for="user in users" :key="user.userId" class="fixed transition-all"
         :style="{ animationDuration: debounce * 4 + 'ms', left: user.x + 'px', top: user.y + 'px' }">
@@ -97,4 +102,6 @@ const userStyle = computed(() => ({ left: x.value + 'px', top: y.value + 'px' })
     <div ref="el" :style="userStyle" class="fixed cursor-grab">
         <Dot :r="15" class="text-red-500/90" />
     </div>
+
+    <Button @click="onStart">Start</Button>
 </template>
