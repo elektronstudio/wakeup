@@ -21,6 +21,10 @@ import LinkCard from '~/components/LinkCard.vue';
                 <div>Drag test</div>
                 <div class="text-gray-500">Testing dragging</div>
             </LinkCard>
+            <LinkCard to="/three">
+                <div>ThreeJS test</div>
+                <div class="text-gray-500">Testing 3D</div>
+            </LinkCard>
         </div>
         <Breadboard />
     </div>
