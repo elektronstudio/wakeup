@@ -14,7 +14,9 @@
     "nuxt": "^3.13.0",
     "reconnecting-websocket": "^4.4.0",
     "three": "0.121.1",
+    "three.meshline": "^1.4.0",
     "tone": "^14.7.77",
+    "troika-three-text": "^0.30.0",
     "vue": "latest",
     "vue-router": "latest"
   },
