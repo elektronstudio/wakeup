@@ -114,10 +114,10 @@ const onStart = async () => {
       :r="circleRadius"
       cx="0"
       cy="0"
-      :stroke="user.collides ? '#ff3333' : 'gray'"
+      :stroke="user.collides ? 'rgba(239 68 68 / 0.9)' : 'gray'"
       stroke-width="2"
       fill="none"
-      class="transition-colors duration-500"
+      class="transition-colors duration-300"
     />
   </svg>
 
