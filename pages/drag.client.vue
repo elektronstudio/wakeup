@@ -68,11 +68,9 @@ watch([x, y], ([x, y]) => {
   user.value.y = y - centerY.value + userRadius;
 });
 
-const svgSize = height.value;
-const svgSizeHalf = svgSize / 2;
-const viewBox = `-${svgSizeHalf} -${svgSizeHalf} ${svgSize} ${svgSize}`;
-const left = computed(() => centerX.value - svgSizeHalf + "px");
-const top = computed(() => centerY.value - svgSizeHalf + "px");
+const viewBox = `-${width.value / 2} -${height.value / 2} ${width.value} ${
+  height.value
+}`;
 
 const messageType = "USER_XY";
 
@@ -174,13 +172,7 @@ const onStart = async () => {
 </script>
 
 <template>
-  <svg
-    :width="svgSize"
-    :height="svgSize"
-    :viewBox="viewBox"
-    class="fixed pointer-events-none"
-    :style="{ top, left }"
-  >
+  <svg class="fixed pointer-events-none w-full h-full" :viewBox="viewBox">
     <circle
       v-for="(circleData, index) in circles"
       :key="index"
@@ -194,9 +186,9 @@ const onStart = async () => {
     />
   </svg>
 
-  <pre class="pointer-events-none select-none">{{
-    { randomUser, a, left, top, user: { ...user, userId }, users, circles }
-  }}</pre>
+  <!-- <pre class="pointer-events-none select-none">{{
+    { randomUser, a, user: { ...user, userId }, users, circles }
+  }}</pre> -->
 
   <div
     v-for="user in users"
@@ -210,9 +202,8 @@ const onStart = async () => {
   >
     <Dot :r="15" class="text-blue-500/90" />
   </div>
-  <div ref="el" :style="userStyle" class="fixed cursor-grab">
+  <div ref="el" :style="userStyle" class="fixed cursor-grab" @click="onStart">
     <Dot :r="15" class="text-red-500/90" />
   </div>
-
-  <Button @click="onStart">Start</Button>
+  <div class="fixed p-8"><Button @click="onStart">Start</Button></div>
 </template>
