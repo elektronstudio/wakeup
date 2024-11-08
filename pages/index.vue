@@ -10,10 +10,10 @@ import LinkCard from "~/components/LinkCard.vue";
       Reviving virtual peforming arts and sound experiences from the lockdown
     </Heading>
     <p class="w-[60ch] text-gray-400">
-      From 2020 to 2023, the artist collective
+      From 2020 to 2022, the artist collective
       <span class="border-b border-gray-600">eˉlektron</span> pioneered a series
-      of online experiments, residencies, and performances, reimagining the
-      collaborative and communal essence of performing arts in a virtual space.
+      of online performances and experiments, reimagining the collaborative and
+      communal essence of performing arts in a virtual space.
     </p>
     <p class="w-[60ch] text-gray-400">
       After being offline for several years, these projects are being revived in

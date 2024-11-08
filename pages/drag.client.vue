@@ -1,22 +1,27 @@
 <script setup lang="ts">
 import * as Tone from "tone";
-import { Circle, Polygon, Result } from "collisions";
+import { Circle } from "collisions";
 import { useUserId, useUserName } from "~/composables/user";
 
 const el = ref<HTMLElement | null>(null);
 
-const { centerX, centerY } = useWindowCenter();
+const { width, height, centerX, centerY } = useWindowCenter();
 
 const userRadius = 15;
+const circleRadius = 100;
+
+const circles = [{ x: 0, y: 0, r: circleRadius }];
+
+const randomUser = randomXY(height.value, height.value, userRadius, circles);
 
 const { x, y } = useDraggable(el, {
   initialValue: {
-    x: centerX.value - userRadius,
+    x: centerX.value - userRadius + randomUser.x,
     y: centerY.value - userRadius,
   },
 });
 
-const user = ref({ x: 0, y: 0, collides: undefined });
+const user = ref({ x: 0 + randomUser.x, y: 0, collides: undefined });
 
 const { messages, sendMessage } = useMessages();
 
@@ -27,9 +32,7 @@ watch([x, y], ([x, y]) => {
   user.value.y = y - centerY.value + userRadius;
 });
 
-const circleRadius = 250;
-const circlePadding = 100;
-const svgSize = circleRadius * 2 + circlePadding * 2;
+const svgSize = height.value;
 const svgSizeHalf = svgSize / 2;
 const viewBox = `-${svgSizeHalf} -${svgSizeHalf} ${svgSize} ${svgSize}`;
 const left = computed(() => centerX.value - svgSizeHalf + "px");
@@ -122,7 +125,7 @@ const onStart = async () => {
   </svg>
 
   <pre class="pointer-events-none select-none">{{
-    { a, left, top, user: { ...user, userId }, users }
+    { randomUser, a, left, top, user: { ...user, userId }, users }
   }}</pre>
 
   <div
