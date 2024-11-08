@@ -40,7 +40,18 @@ const circles = [
 // Create a player for each circle if soundFile exists
 const players = circles.map((circleData) => {
   if (circleData.soundFile) {
-    const player = new Tone.Player(circleData.soundFile).toDestination();
+    const player = new Tone.Player({
+      url: circleData.soundFile,
+      onload: () => {
+        console.log(`Loaded sound file: ${circleData.soundFile}`);
+      },
+      onerror: (error) => {
+        console.error(
+          `Error loading sound file: ${circleData.soundFile}`,
+          error
+        );
+      },
+    }).toDestination();
     player.loop = true;
     player.autostart = false;
     return player;
@@ -116,6 +127,7 @@ watch(
     const userCircle = new Circle(user.value.x, user.value.y, userRadius);
     circles.forEach((circleData, index) => {
       const circle = new Circle(circleData.x, circleData.y, circleData.r);
+      const previouslyColliding = circleData.colliding;
       circleData.colliding = userCircle.collides(circle);
 
       // Calculate distance of user from the circle center
@@ -130,17 +142,18 @@ watch(
 
       // Adjust the volume of the corresponding player based on distance
       if (players[index]) {
-        players[index].volume.value = Tone.gainToDb(circleData.distance);
-        if (
-          circleData.colliding &&
-          (!players[index].state || players[index].state === "stopped")
-        ) {
-          players[index].start();
-        } else if (
-          !circleData.colliding &&
-          players[index].state === "started"
-        ) {
-          players[index].stop();
+        const player = players[index];
+        if (player.loaded) {
+          // Ensure the buffer is loaded before starting
+          player.volume.value = Tone.gainToDb(circleData.distance);
+          if (
+            circleData.colliding &&
+            (!player.state || player.state === "stopped")
+          ) {
+            player.start();
+          } else if (!circleData.colliding && player.state === "started") {
+            player.stop();
+          }
         }
       }
     });
@@ -158,7 +171,7 @@ const a = ref(0);
 const onStart = async () => {
   await Tone.start();
   players.forEach((player) => {
-    if (player) {
+    if (player && player.loaded) {
       player.start();
     }
   });
@@ -182,13 +195,9 @@ const onStart = async () => {
       :stroke="circleData.colliding ? 'rgba(239 68 68 / 0.9)' : 'gray'"
       stroke-width="2"
       fill="none"
-      class="transition-colors duration-300"
+      :class="['transition-all duration-300']"
     />
   </svg>
-
-  <!-- <pre class="pointer-events-none select-none">{{
-    { randomUser, a, user: { ...user, userId }, users, circles }
-  }}</pre> -->
 
   <div
     v-for="user in users"
@@ -205,5 +214,8 @@ const onStart = async () => {
   <div ref="el" :style="userStyle" class="fixed cursor-grab" @click="onStart">
     <Dot :r="15" class="text-red-500/90" />
   </div>
-  <div class="fixed p-8"><Button @click="onStart">Start</Button></div>
+
+  <div class="p-8 fixed top-0 left-0">
+    <Button @click="onStart">Start</Button>
+  </div>
 </template>
