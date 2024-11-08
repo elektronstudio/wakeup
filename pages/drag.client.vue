@@ -10,7 +10,12 @@ const { width, height, centerX, centerY } = useWindowCenter();
 const userRadius = 15;
 const circleRadius = 100;
 
-const circles = [{ x: 0, y: 0, r: circleRadius }];
+// Add two more circles to the array
+const circles = [
+  { x: 0, y: 0, r: circleRadius, colliding: false },
+  { x: 200, y: 200, r: circleRadius, colliding: false },
+  { x: -200, y: -200, r: circleRadius, colliding: false },
+];
 
 const randomUser = randomXY(height.value, height.value, userRadius, circles);
 
@@ -21,7 +26,7 @@ const { x, y } = useDraggable(el, {
   },
 });
 
-const user = ref({ x: 0 + randomUser.x, y: 0, collides: undefined });
+const user = ref({ x: 0 + randomUser.x, y: 0 });
 
 const { messages, sendMessage } = useMessages();
 
@@ -76,13 +81,14 @@ watch(messages.value, async (newValue) => {
   }
 });
 
-const circle = new Circle(0, 0, circleRadius);
-
 watch(
   [x, y],
   () => {
     const userCircle = new Circle(user.value.x, user.value.y, userRadius);
-    user.value.collides = userCircle.collides(circle);
+    circles.forEach((circleData) => {
+      const circle = new Circle(circleData.x, circleData.y, circleData.r);
+      circleData.colliding = userCircle.collides(circle);
+    });
   },
   { immediate: true }
 );
@@ -114,10 +120,12 @@ const onStart = async () => {
     :style="{ top, left }"
   >
     <circle
-      :r="circleRadius"
-      cx="0"
-      cy="0"
-      :stroke="user.collides ? 'rgba(239 68 68 / 0.9)' : 'gray'"
+      v-for="(circleData, index) in circles"
+      :key="index"
+      :r="circleData.r"
+      :cx="circleData.x"
+      :cy="circleData.y"
+      :stroke="circleData.colliding ? 'rgba(239 68 68 / 0.9)' : 'gray'"
       stroke-width="2"
       fill="none"
       class="transition-colors duration-300"
