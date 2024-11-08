@@ -10,12 +10,43 @@ const { width, height, centerX, centerY } = useWindowCenter();
 const userRadius = 15;
 const circleRadius = 100;
 
-// Add two more circles to the array
+// Add two more circles to the array, each with a sound file
 const circles = [
-  { x: 0, y: 0, r: circleRadius, colliding: false, distance: 0 },
-  { x: 200, y: 200, r: circleRadius, colliding: false, distance: 0 },
-  { x: -200, y: -200, r: circleRadius, colliding: false, distance: 0 },
+  {
+    x: 0,
+    y: 0,
+    r: circleRadius,
+    colliding: false,
+    distance: 0,
+    soundFile: "/crowd.mp3",
+  },
+  {
+    x: 200,
+    y: 200,
+    r: circleRadius,
+    colliding: false,
+    distance: 0,
+    soundFile: "/what_about_people_our_age.mp3",
+  },
+  {
+    x: -200,
+    y: -200,
+    r: circleRadius,
+    colliding: false,
+    distance: 0,
+  },
 ];
+
+// Create a player for each circle if soundFile exists
+const players = circles.map((circleData) => {
+  if (circleData.soundFile) {
+    const player = new Tone.Player(circleData.soundFile).toDestination();
+    player.loop = true;
+    player.autostart = false;
+    return player;
+  }
+  return null;
+});
 
 const randomUser = randomXY(height.value, height.value, userRadius, circles);
 
@@ -85,7 +116,7 @@ watch(
   [x, y],
   () => {
     const userCircle = new Circle(user.value.x, user.value.y, userRadius);
-    circles.forEach((circleData) => {
+    circles.forEach((circleData, index) => {
       const circle = new Circle(circleData.x, circleData.y, circleData.r);
       circleData.colliding = userCircle.collides(circle);
 
@@ -97,6 +128,22 @@ watch(
         circleData.distance = 1 - distanceFromCenter / circleData.r;
       } else {
         circleData.distance = 0;
+      }
+
+      // Adjust the volume of the corresponding player based on distance
+      if (players[index]) {
+        players[index].volume.value = Tone.gainToDb(circleData.distance);
+        if (
+          circleData.colliding &&
+          (!players[index].state || players[index].state === "stopped")
+        ) {
+          players[index].start();
+        } else if (
+          !circleData.colliding &&
+          players[index].state === "started"
+        ) {
+          players[index].stop();
+        }
       }
     });
   },
@@ -112,6 +159,11 @@ const a = ref(0);
 
 const onStart = async () => {
   await Tone.start();
+  players.forEach((player) => {
+    if (player) {
+      player.start();
+    }
+  });
   Tone.getTransport().scheduleRepeat((time) => {
     Tone.getDraw().schedule(() => {
       a.value += 1;
@@ -143,16 +195,7 @@ const onStart = async () => {
   </svg>
 
   <pre class="pointer-events-none select-none">{{
-    {
-      circles,
-      randomUser,
-      a,
-      left,
-      top,
-      user: { ...user, userId },
-      users,
-      circles,
-    }
+    { randomUser, a, left, top, user: { ...user, userId }, users, circles }
   }}</pre>
 
   <div
