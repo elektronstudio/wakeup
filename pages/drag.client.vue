@@ -12,9 +12,9 @@ const circleRadius = 100;
 
 // Add two more circles to the array
 const circles = [
-  { x: 0, y: 0, r: circleRadius, colliding: false },
-  { x: 200, y: 200, r: circleRadius, colliding: false },
-  { x: -200, y: -200, r: circleRadius, colliding: false },
+  { x: 0, y: 0, r: circleRadius, colliding: false, distance: 0 },
+  { x: 200, y: 200, r: circleRadius, colliding: false, distance: 0 },
+  { x: -200, y: -200, r: circleRadius, colliding: false, distance: 0 },
 ];
 
 const randomUser = randomXY(height.value, height.value, userRadius, circles);
@@ -88,6 +88,16 @@ watch(
     circles.forEach((circleData) => {
       const circle = new Circle(circleData.x, circleData.y, circleData.r);
       circleData.colliding = userCircle.collides(circle);
+
+      // Calculate distance of user from the circle center
+      const dx = user.value.x - circleData.x;
+      const dy = user.value.y - circleData.y;
+      const distanceFromCenter = Math.sqrt(dx * dx + dy * dy);
+      if (distanceFromCenter <= circleData.r) {
+        circleData.distance = 1 - distanceFromCenter / circleData.r;
+      } else {
+        circleData.distance = 0;
+      }
     });
   },
   { immediate: true }
@@ -133,7 +143,16 @@ const onStart = async () => {
   </svg>
 
   <pre class="pointer-events-none select-none">{{
-    { randomUser, a, left, top, user: { ...user, userId }, users }
+    {
+      circles,
+      randomUser,
+      a,
+      left,
+      top,
+      user: { ...user, userId },
+      users,
+      circles,
+    }
   }}</pre>
 
   <div
