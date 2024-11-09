@@ -223,7 +223,7 @@ const onStart = async () => {
     <Dot :r="userRadius" class="text-red-500/90" @click="onStart" />
     <textarea
       v-model="user.status"
-      class="mt-[7px] w-32 h-64 resize-none outline-none text-white text-sm bg-transparent leading-tight [field-sizing:normal]"
+      class="mt-[7px] w-32 h-64 border-none p-0 resize-none outline-none text-white text-sm bg-transparent leading-tight [field-sizing:normal]"
     />
   </div>
 
