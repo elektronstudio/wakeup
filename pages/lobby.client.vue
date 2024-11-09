@@ -14,30 +14,31 @@ const { width, height, centerX, centerY } = useWindowCenter();
 const userRadius = 15;
 const circleRadius = 100;
 
-// Add two more circles to the array, each with a sound file
 const circles = [
+  {
+    x: -250,
+    y: -200,
+    r: circleRadius,
+    colliding: false,
+    distance: 0,
+    soundFile: "/fertility.mp3",
+  },
+
   {
     x: 0,
     y: 0,
-    r: circleRadius,
+    r: 150,
     colliding: false,
     distance: 0,
     soundFile: "/crowd.mp3",
   },
   {
-    x: 200,
+    x: 300,
     y: 200,
-    r: circleRadius,
+    r: 80,
     colliding: false,
     distance: 0,
-    soundFile: "/what_about_people_our_age.mp3",
-  },
-  {
-    x: -200,
-    y: -200,
-    r: circleRadius,
-    colliding: false,
-    distance: 0,
+    soundFile: "/kodak.mp3",
   },
 ];
 
@@ -223,11 +224,7 @@ const onStart = async () => {
     <Dot :r="userRadius" class="text-red-500/90" @click="onStart" />
     <textarea
       v-model="user.status"
-      class="mt-[7px] w-32 h-64 border-none p-0 resize-none outline-none text-white text-sm bg-transparent leading-tight [field-sizing:normal]"
+      class="font-mono mt-[7px] w-32 h-64 border-none p-0 resize-none outline-none text-white text-sm bg-transparent leading-tight [font-feature-settings:tnum]"
     />
-  </div>
-
-  <div class="p-8 fixed top-0 left-0">
-    <Button @click="onStart">Start</Button>
   </div>
 </template>
