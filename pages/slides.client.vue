@@ -10,10 +10,32 @@ type ContentItem = {
   title?: string;
   video?: string;
   audio?: string;
+  draggable?: true;
 };
 
 const items = ref<ContentItem[]>([
-  { audio: "crowd.mp3" },
+  { draggable: true },
+  { image: "chaplin.jpg" },
+  { video: "hello.mp4" },
+  { image: "algo.png" },
+  { image: "nite.png" },
+  { image: "neuro.jpg" },
+  { image: "neuro.jpg" },
+  { image: "liis1.png" },
+  { image: "liis2.png" },
+  { image: "kure.png" },
+  { image: "lp.png" },
+  { image: "gallery.png" },
+  { image: "henri.png" },
+  { image: "twitch.png" },
+  { image: "kanut.png" },
+  { image: "world1.png" },
+  { image: "world2.png" },
+  { image: "world3.png" },
+  { image: "world4.png" },
+  { image: "world5.png" },
+  { image: "lobby_sketch.jpg" },
+  { audio: "road.mp3" },
   { video: "elektron_cables.mp4" },
   { title: "Lähme tagasi talve" },
 ]);
@@ -46,10 +68,7 @@ watchEffect(() => {
       v-show="i === currentIndex"
       class="h-full"
     >
-      <div
-        v-if="item.image"
-        class="flex justify-center items-center border h-full"
-      >
+      <div v-if="item.image" class="flex justify-center items-center h-full">
         <img :src="'/slides/' + item.image" class="h-full object-contain" />
       </div>
       <div
@@ -72,6 +91,7 @@ watchEffect(() => {
           muted
           loop
           autoplay
+          controls
         />
       </div>
       <div
@@ -85,6 +105,7 @@ watchEffect(() => {
           class="invert opacity-0 transition hover:opacity-50"
         />
       </div>
+      <Draggable v-if="item.draggable" />
     </div>
   </div>
 </template>
