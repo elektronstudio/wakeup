@@ -93,19 +93,20 @@ const messageType = "USER_XY";
 const debounce = 50;
 
 debouncedWatch(
-  [x, y],
+  [x, y, () => user.value.status],
   () => {
     sendMessage.value({
       type: messageType,
       userId: userId.value,
       userX: user.value.x,
       userY: user.value.y,
+      userStatus: user.value.status,
     });
   },
   { debounce }
 );
 
-const users = ref<any[]>([]);
+const otherUsers = ref<any[]>([]);
 
 watch(messages.value, async (newValue) => {
   const message = newValue[newValue.length - 1];
@@ -114,14 +115,15 @@ watch(messages.value, async (newValue) => {
       userId: message.userId,
       x: message.userX + centerX.value,
       y: message.userY + centerY.value,
+      status: message.userStatus,
     };
-    const existingUserIndex = users.value?.findIndex((u) => {
+    const existingUserIndex = otherUsers.value?.findIndex((u) => {
       return u.userId === user.userId;
     });
-    if (users.value && existingUserIndex > -1) {
-      users.value[existingUserIndex] = user;
+    if (otherUsers.value && existingUserIndex > -1) {
+      otherUsers.value[existingUserIndex] = user;
     } else {
-      users.value.push(user);
+      otherUsers.value.push(user);
     }
   }
 });
@@ -208,23 +210,27 @@ const onStart = async () => {
   </svg>
 
   <div
-    v-for="user in users"
-    :key="user.userId"
-    class="fixed transition-all"
+    v-for="otherUser in otherUsers"
+    :key="otherUser.userId"
+    class="fixed transition-all flex gap-2"
     :style="{
       animationDuration: debounce * 4 + 'ms',
-      left: user.x + 'px',
-      top: user.y + 'px',
+      left: otherUser.x + 'px',
+      top: otherUser.y + 'px',
     }"
   >
-    <Dot :r="userRadius" class="text-blue-500/90" />
+    <Dot class="text-blue-500/90" />
+    <textarea
+      v-model="otherUser.status"
+      class="tracking-loose mt-[7px] w-32 h-64 border-none p-0 resize-none outline-none text-white text-sm bg-transparent leading-tight [font-feature-settings:tnum]"
+    />
   </div>
 
   <div ref="el" :style="userStyle" class="fixed cursor-grab flex gap-2">
-    <Dot :r="userRadius" class="text-red-500/90" @click="onStart" />
+    <Dot class="text-red-500/90" @click="onStart" />
     <textarea
       v-model="user.status"
-      class="font-mono mt-[7px] w-32 h-64 border-none p-0 resize-none outline-none text-white text-sm bg-transparent leading-tight [font-feature-settings:tnum]"
+      class="tracking-loose mt-[7px] w-32 h-64 border-none p-0 resize-none outline-none text-white text-sm bg-transparent leading-tight [font-feature-settings:tnum]"
     />
   </div>
 </template>
