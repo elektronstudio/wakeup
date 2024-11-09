@@ -1,10 +1,12 @@
 <script setup lang="js">
 const settings = useSettings();
 const userName = useUserName();
+const isOpen = ref(false);
 </script>
 
 <template>
   <div
+    v-if="isOpen"
     style="
       position: fixed;
       top: 0;
@@ -44,5 +46,19 @@ const userName = useUserName();
         :step="initialSettings[i].step ?? 1"
       />
     </template>
+  </div>
+  <div
+    v-if="isOpen"
+    @click="isOpen = false"
+    class="fixed top-2 right-2 text-white opacity-50"
+  >
+    ×
+  </div>
+  <div
+    v-if="!isOpen"
+    @click="isOpen = true"
+    class="fixed top-2 right-2 text-white opacity-50"
+  >
+    ≡
   </div>
 </template>
