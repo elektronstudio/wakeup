@@ -15,6 +15,8 @@ type ContentItem = {
 
 const items = ref<ContentItem[]>([
   { draggable: true },
+  { image: "circ1.png" },
+  { image: "circ2.png" },
   { image: "chaplin.jpg" },
   { video: "hello.mp4" },
   { image: "algo.png" },
