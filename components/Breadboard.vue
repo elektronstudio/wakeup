@@ -5,7 +5,7 @@ const size = 5;
   <svg
     width="100vw"
     height="100vh"
-    class="pointer-events-none fixed inset-0 text-white/80"
+    class="pointer-events-none fixed inset-0 text-white/50"
   >
     <defs>
       <pattern

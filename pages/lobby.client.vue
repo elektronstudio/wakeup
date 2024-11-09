@@ -3,6 +3,10 @@ import * as Tone from "tone";
 import { Circle } from "collisions";
 import { useUserId, useUserName } from "~/composables/user";
 
+definePageMeta({
+  layout: "three",
+});
+
 const el = ref<HTMLElement | null>(null);
 
 const { width, height, centerX, centerY } = useWindowCenter();
@@ -64,11 +68,11 @@ const randomUser = randomXY(height.value, height.value, userRadius, circles);
 const { x, y } = useDraggable(el, {
   initialValue: {
     x: centerX.value - userRadius + randomUser.x,
-    y: centerY.value - userRadius,
+    y: centerY.value - userRadius + randomUser.y,
   },
 });
 
-const user = ref({ x: 0 + randomUser.x, y: 0 });
+const user = ref({ x: 0 + randomUser.x, y: 0 + randomUser.y, status: "" });
 
 const { messages, sendMessage } = useMessages();
 
@@ -185,7 +189,10 @@ const onStart = async () => {
 </script>
 
 <template>
-  <svg class="fixed pointer-events-none w-full h-full" :viewBox="viewBox">
+  <svg
+    class="fixed pointer-events-none w-full h-full bg-black"
+    :viewBox="viewBox"
+  >
     <circle
       v-for="(circleData, index) in circles"
       :key="index"
@@ -209,10 +216,15 @@ const onStart = async () => {
       top: user.y + 'px',
     }"
   >
-    <Dot :r="15" class="text-blue-500/90" />
+    <Dot :r="userRadius" class="text-blue-500/90" />
   </div>
-  <div ref="el" :style="userStyle" class="fixed cursor-grab" @click="onStart">
-    <Dot :r="15" class="text-red-500/90" />
+
+  <div ref="el" :style="userStyle" class="fixed cursor-grab flex gap-2">
+    <Dot :r="userRadius" class="text-red-500/90" @click="onStart" />
+    <textarea
+      v-model="user.status"
+      class="mt-[7px] w-32 h-64 resize-none outline-none text-white text-sm bg-transparent leading-tight [field-sizing:normal]"
+    />
   </div>
 
   <div class="p-8 fixed top-0 left-0">
