@@ -8,6 +8,10 @@ canvas {
   outline: none;
 }
 
+body {
+  margin: 0;
+}
+
 input[type="text"],
 textarea {
   font-family: sans-serif;
@@ -32,17 +36,19 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   border: 2px solid white;
-  height: 20px;
-  width: 20px;
-  border-radius: 100%;
-  background: #333;
+  height: 24px;
+  width: 24px;
+  background: gray;
   cursor: pointer;
+  border-radius: 10000px;
 }
 
 input[type="color"] {
-  width: 100%;
   -webkit-appearance: none;
-  height: 16px;
+  height: 24px;
+  width: 24px;
+  border-radius: 4px;
+  width: 100%;
 }
 input[type="color"]::-webkit-color-swatch-wrapper {
   padding: 0;
@@ -51,9 +57,11 @@ input[type="color"]::-webkit-color-swatch {
   border: none;
 }
 
-input,
+input[type="text"],
 textarea {
   width: 100%;
   line-height: 1.5em;
+  border: 2px solid white;
+  font-size: 1em;
 }
 </style>
