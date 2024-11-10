@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import LinkCard from "~/components/LinkCard.vue";
+const { shift, space } = useMagicKeys();
+
+watchEffect(async () => {
+  if (shift.value && space.value) {
+    await navigateTo("/slides");
+  }
+});
 </script>
 
 <template>

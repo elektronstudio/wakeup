@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { useMagicKeys } from "@vueuse/core";
+import { useStorage } from "@vueuse/core";
+const { shift, space } = useMagicKeys();
+
+watchEffect(async () => {
+  if (shift.value && space.value) {
+    await navigateTo("/");
+  }
+});
 
 definePageMeta({
   layout: "three",
@@ -42,7 +49,7 @@ const items = ref<ContentItem[]>([
   { title: "Lähme tagasi talve" },
 ]);
 
-const currentIndex = ref(0);
+const currentIndex = useStorage("slides", 0);
 
 const next = () => {
   currentIndex.value = (currentIndex.value + 1) % items.value.length;

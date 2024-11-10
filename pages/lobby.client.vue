@@ -192,10 +192,18 @@ const onStart = async () => {
 </script>
 
 <template>
-  <svg
-    class="fixed pointer-events-none w-full h-full bg-black"
-    :viewBox="viewBox"
+  <div
+    class="fixed inset-0 flex justify-center items-center bg-[rgb(14,14,14)]"
   >
+    <video
+      src="/asuna.mp4"
+      class="h-full brightness-[0.2]"
+      muted
+      loop
+      autoplay
+    />
+  </div>
+  <svg class="fixed pointer-events-none w-full h-full" :viewBox="viewBox">
     <circle
       v-for="(circleData, index) in circles"
       :key="index"
