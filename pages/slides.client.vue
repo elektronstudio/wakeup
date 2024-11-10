@@ -21,43 +21,63 @@ type ContentItem = {
 };
 
 const items = ref<ContentItem[]>([
-  { draggable: true },
-  { image: "circ1.png" },
-  { image: "circ2.png" },
-  { image: "chaplin.jpg" },
+  // { image: "algo.png" },
   { video: "hello.mp4" },
-  { image: "algo.png" },
-  { image: "nite.png" },
-  { image: "neuro.jpg" },
+  { image: "stages.png" },
+  { video: "elektronlive.mp4" },
   { image: "neuro.jpg" },
   { image: "liis1.png" },
   { image: "liis2.png" },
   { image: "kure.png" },
   { image: "lp.png" },
+  { image: "zahir.png" },
+  { image: "hundid.png" },
+  { image: "animals.png" },
   { image: "gallery.png" },
   { image: "henri.png" },
-  { image: "twitch.png" },
+  { audio: "road.mp3" },
   { image: "kanut.png" },
+  { image: "beethoven.jpg" },
   { image: "world1.png" },
   { image: "world2.png" },
   { image: "world3.png" },
   { image: "world4.png" },
   { image: "world5.png" },
+  { image: "twitch.png" },
+  { image: "nite.png" },
+  { title: "Eksperiment № 1" },
+  { video: "foyer1.mp4" },
+  { image: "foyer2.png" },
+  { image: "foyer4.png" },
+  { image: "chips2.png" },
+  { image: "chips3.png" },
+  { image: "chips8.png" },
+  { image: "chips6.png" },
+  { image: "chips1.png" },
+  { title: "Eksperiment № 2" },
+  { draggable: true },
+  { video: "sphere.mp4" },
   { image: "lobby_sketch.jpg" },
-  { audio: "road.mp3" },
-  { video: "elektron_cables.mp4" },
-  { title: "Lähme tagasi talve" },
+  { image: "circ1.png" },
+  { image: "circ2.png" },
+  { title: "Eksperiment № 3" },
+  { image: "chaplin.jpg" },
+  // { video: "elektron_cables.mp4" },
+  { video: "hello.mp4" },
 ]);
 
 const currentIndex = useStorage("slides", 0);
 
 const next = () => {
-  currentIndex.value = (currentIndex.value + 1) % items.value.length;
+  if (currentIndex.value < items.value.length - 1) {
+    currentIndex.value += 1;
+  }
 };
 
 const prev = () => {
-  currentIndex.value =
-    (currentIndex.value - 1 + items.value.length) % items.value.length;
+  if (currentIndex.value > 0) {
+    currentIndex.value -= 1;
+  }
 };
 
 const { arrowRight, arrowLeft } = useMagicKeys();
@@ -80,10 +100,7 @@ watchEffect(() => {
       <div v-if="item.image" class="flex justify-center items-center h-full">
         <img :src="'/slides/' + item.image" class="h-full object-contain" />
       </div>
-      <div
-        v-if="item.title"
-        class="flex justify-center items-center border h-full"
-      >
+      <div v-if="item.title" class="flex justify-center items-center h-full">
         <h1
           class="text-8xl text-balance text-center font-semibold px-4 md:px-32 tracking-tight"
         >
@@ -98,7 +115,6 @@ watchEffect(() => {
           :src="'/slides/' + item.video"
           class="h-full"
           muted
-          loop
           autoplay
           controls
         />
@@ -110,7 +126,6 @@ watchEffect(() => {
         <audio
           :src="'/slides/' + item.audio"
           controls
-          loop
           class="invert opacity-0 transition hover:opacity-50"
         />
       </div>

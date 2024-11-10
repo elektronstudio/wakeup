@@ -11,7 +11,10 @@ watchEffect(async () => {
 <template>
   <Breadboard />
   <div class="flex flex-col gap-10">
-    <h1 class="text-5xl md:text-7xl tracking-tight">Wake↑up</h1>
+    <!-- <h1 class="text-5xl md:text-7xl tracking-tight">Wake↑up</h1> -->
+    <h1 class="text-4xl md:text-7xl tracking-tight font-semibold">
+      elektron.studio
+    </h1>
     <div />
     <div class="grid lg:grid-cols-2 gap-14">
       <div class="flex flex-col gap-8">
@@ -58,46 +61,64 @@ watchEffect(async () => {
         </div>
       </div>
     </div>
-    <div class="grid md:grid-cols-5 gap-6">
+    <div class="grid md:grid-cols-4 gap-6">
       <a href="http://foyer.elektron.studio" target="_blank">
         <Card>
+          <!-- <div class="uppercase tracking-wider font-bold text-xs text-gray-500">
+            Remaster
+          </div> -->
           <div>3D theatre space</div>
           <div class="text-gray-500">
-            First presented in the Digital Foyer conference in Düsseldorf Oct 5
-            2020
+            First presented in the Digital Foyer conference in Düsseldorf
           </div>
+          <div class="text-sm text-gray-600">5 Oct 2020</div>
         </Card>
       </a>
-      <NuxtLink to="/foyer" target="_blank">
+      <!-- <NuxtLink to="/foyer" target="_blank">
         <Card>
+          <div class="uppercase tracking-wider font-bold text-xs text-gray-500">
+            Remaster`
+          </div>
           <div>3D theatre space II</div>
           <div class="text-gray-500">
             Second version of theatre space with online users. Nov 2020
           </div>
         </Card>
-      </NuxtLink>
+      </NuxtLink> -->
       <a href="https://www.youtube.com/watch?v=ttQ6L5ach3w" target="_blank">
         <Card>
-          <div>Electron Lobby (video)</div>
+          <!-- <div class="uppercase tracking-wider font-bold text-xs text-gray-500">
+            Video
+          </div> -->
+          <div>Electron Lobby video</div>
           <div class="text-gray-500">
-            Garage48 hackaton project for virtual social gatherings. Jan 27 2021
+            Garage48 hackaton project for virtual social gatherings.
           </div>
+          <div class="text-sm text-gray-600">27 Jan 2021</div>
         </Card>
       </a>
       <NuxtLink to="/lobby" target="_blank">
         <Card>
+          <!-- <div class="uppercase tracking-wider font-bold text-xs text-gray-500">
+            Remake
+          </div> -->
           <div>Electron Lobby</div>
           <div class="text-gray-500">
-            Remake of the original lobby idea with online users. Nov 2024
+            Recreation of the original lobby idea with online users.
           </div>
+          <div class="text-sm text-gray-600">Nov 2024</div>
         </Card>
       </NuxtLink>
       <a href="http://synth.elektron.studio" target="_blank">
         <Card>
-          <div>Collective music maker</div>
+          <!-- <div class="uppercase tracking-wider font-bold text-xs text-gray-500">
+            Remaster
+          </div> -->
+          <div>Collective synth</div>
           <div class="text-gray-500">
-            Collaborative sound installation with online users. April 2021
+            Collaborative sound installation with online users
           </div>
+          <div class="text-sm text-gray-600">April 2021</div>
         </Card>
       </a>
     </div>
