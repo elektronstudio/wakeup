@@ -25,25 +25,25 @@ const items = ref<ContentItem[]>([
   { video: "hello.mp4" },
   { image: "stages.png" },
   { video: "elektronlive.mp4" },
+  // { image: "liis1.png" },
+  // { image: "liis2.png" },
+  { image: "hundid.png" },
   { image: "neuro.jpg" },
-  { image: "liis1.png" },
-  { image: "liis2.png" },
   { image: "kure.png" },
   { image: "lp.png" },
   { image: "zahir.png" },
-  { image: "hundid.png" },
   { image: "animals.png" },
   { image: "gallery.png" },
   { image: "henri.png" },
   { audio: "road.mp3" },
   { image: "kanut.png" },
   { image: "beethoven.jpg" },
+  { image: "twitch.png" },
   { image: "world1.png" },
   { image: "world2.png" },
   { image: "world3.png" },
   { image: "world4.png" },
   { image: "world5.png" },
-  { image: "twitch.png" },
   { image: "nite.png" },
   { title: "Eksperiment № 1" },
   { video: "foyer1.mp4" },
@@ -107,10 +107,7 @@ watchEffect(() => {
           {{ item.title }}
         </h1>
       </div>
-      <div
-        v-if="item.video"
-        class="flex justify-center items-center border h-full"
-      >
+      <div v-if="item.video" class="flex justify-center items-center h-full">
         <video
           :src="'/slides/' + item.video"
           class="h-full"
@@ -119,10 +116,7 @@ watchEffect(() => {
           controls
         />
       </div>
-      <div
-        v-if="item.audio"
-        class="flex justify-center items-center border h-full"
-      >
+      <div v-if="item.audio" class="flex justify-center items-center h-full">
         <audio
           :src="'/slides/' + item.audio"
           controls
