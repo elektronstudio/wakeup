@@ -35,29 +35,29 @@ const cards = [
   <div class="flex flex-col gap-10">
     <h1 class="text-5xl md:text-7xl tracking-tight">Wake↑up</h1>
     <div />
-    <div class="grid lg:grid-cols-[3fr_1fr] gap-14">
-      <div class="flex flex-col gap-8">
+    <div class="grid lg:grid-cols-[1fr_2fr]">
+      <div class="pr-16">
         <Heading>
           Reviving virtual performing arts and sound experiences from the
           digital obscurity
         </Heading>
-        <div class="flex flex-col gap-4 text-gray-400">
-          <p>
-            From 2020 to 2022, the performing arts platform
-            <a href="https://elektron.art" class="underline underline-offset-4"
-              >elektron.art</a
-            >
-            pioneered a series of online performances and experiments,
-            reimagining the collaborative and communal essence of performing
-            arts in a virtual space.
-          </p>
-          <p class="text-gray-400">
-            After being offline for several years, these projects are being
-            revived in late 2024, with the original creators updating the code
-            to make them accessible to the public once again.
-          </p>
-          <p>Note: The experiences are not optimized for mobile screens.</p>
-        </div>
+      </div>
+      <div class="flex flex-col gap-4 text-gray-400 md:pr-32">
+        <p>
+          From 2020 to 2022, the performing arts platform
+          <a href="https://elektron.art" class="underline underline-offset-4"
+            >elektron.art</a
+          >
+          pioneered a series of online performances and experiments, reimagining
+          the collaborative and communal essence of performing arts in a virtual
+          space.
+        </p>
+        <p class="text-gray-400">
+          After being offline for several years, these projects are being
+          revived in late 2024, with the original creators updating the code to
+          make them accessible to the public once again.
+        </p>
+        <p>Note: The experiences are not optimized for mobile screens.</p>
       </div>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
