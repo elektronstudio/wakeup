@@ -19,7 +19,7 @@ const { to } = defineProps<{
   >
     <Card
       v-bind="$attrs"
-      class="transition-all hover:border-gray-600 hover:bg-gray-900"
+      class="transition-all hover:border-neutral-600 hover:bg-neutral-900"
     >
       <slot />
     </Card>
