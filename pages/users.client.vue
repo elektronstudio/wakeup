@@ -40,7 +40,7 @@ const textareaClass =
   <div
     ref="el"
     :style="{ left: x + 'px', top: y + 'px' }"
-    class="fixed cursor-grab flex gap-2"
+    class="fixed flex gap-2 select-none touch-none cursor-move"
   >
     <Dot class="text-red-500/90" />
     <textarea v-model="me.status" :class="textareaClass" />
