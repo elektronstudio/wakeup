@@ -1,0 +1,35 @@
+<script lang="ts" setup>
+import { useVModel } from "@vueuse/core";
+
+const props = defineProps<{
+  modelValue: Record<string, any>;
+}>();
+const emit = defineEmits(["update:modelValue"]);
+
+const settings = useVModel(props, "modelValue", emit);
+</script>
+
+<template>
+  <div class="flex flex-col gap-4">
+    <div v-for="(setting, key) in settings">
+      <div v-if="setting.type === 'color'">
+        <label>{{ setting.title }}</label>
+        <input type="color" v-model="setting.value" />
+      </div>
+      <div v-if="setting.type === 'textarea'">
+        <label>{{ setting.title }}</label>
+        <textarea v-model="setting.value" />
+      </div>
+      <div v-if="setting.type === 'range'">
+        <label>{{ setting.title }} {{ setting.value }}</label>
+        <input
+          type="range"
+          v-model.number="setting.value"
+          :min="setting.min"
+          :max="setting.max"
+          :step="setting.step"
+        />
+      </div>
+    </div>
+  </div>
+</template>
