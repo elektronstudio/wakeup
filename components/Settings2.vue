@@ -10,17 +10,17 @@ const settings = useVModel(props, "modelValue", emit);
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <div v-for="(setting, key) in settings">
-      <div v-if="setting.type === 'color'">
-        <label>{{ setting.title }}</label>
+  <div class="flex flex-col gap-2 text-neutral-300 text-sm">
+    <div v-for="setting in settings">
+      <div v-if="setting.type === 'color'" class="flex flex-col gap-1">
+        <label class="">{{ setting.title }}</label>
         <input type="color" v-model="setting.value" />
       </div>
-      <div v-if="setting.type === 'textarea'">
+      <div v-if="setting.type === 'textarea'" class="flex flex-col gap-1">
         <label>{{ setting.title }}</label>
         <textarea v-model="setting.value" />
       </div>
-      <div v-if="setting.type === 'range'">
+      <div v-if="setting.type === 'range'" class="flex flex-col gap-1">
         <label>{{ setting.title }} {{ setting.value }}</label>
         <input
           type="range"
