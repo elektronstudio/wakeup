@@ -1,7 +1,6 @@
 <script setup lang="ts">
-const { messages, sendMessage } = useMessages();
-
 const useUsers = (messageType: string, initialMe: {}) => {
+  const { messages, sendMessage } = useMessages();
   const userId = useUserId();
 
   const me = ref<any>({ userId, ...initialMe });
@@ -43,6 +42,7 @@ const data = useUsers("WAKEUP_USER", { x: 0, y: 0 });
 <template>
   <div>
     <input type="range" v-model.number="data.me.value.x" />
-    <pre>{{ { ...data, message: messages.slice(-1) } }}</pre>
+    <pre>{{ data }}</pre>
+    <!-- <pre>{{ messages.slice(-1) }}</pre> -->
   </div>
 </template>

@@ -5,7 +5,7 @@ export const useMessages = () => {
   const sendMessage = ref((_: any) => {});
   const ws = ref<ReconnectingWebSocket | null>(null);
 
-  onMounted(() => {
+  tryOnMounted(() => {
     const config = useRuntimeConfig();
     const websocket = new ReconnectingWebSocket(config.public.wsUrl);
 
