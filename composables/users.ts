@@ -1,4 +1,4 @@
-export const useUsers = (messageType: string, initialMe: {}) => {
+export const useUsers = (messageType: string, initialMe: {}, debounce: 100) => {
   const { messages, sendMessage } = useMessages();
   const userId = useUserId();
 
@@ -13,7 +13,7 @@ export const useUsers = (messageType: string, initialMe: {}) => {
         payload: updatedMe,
       });
     },
-    { debounce: 100, immediate: true, deep: true }
+    { debounce, immediate: true, deep: true }
   );
 
   watch(messages.value, (updatedMessages) => {

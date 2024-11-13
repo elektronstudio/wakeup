@@ -87,9 +87,13 @@ const defaultUserSettings = {
 
 const settings = ref(defaultSettings);
 
-const { me, others } = useUsers("WAKEUP_USER", {
-  settings: defaultUserSettings,
-});
+const { me, others } = useUsers(
+  "WAKEUP_USER",
+  {
+    settings: defaultUserSettings,
+  },
+  10
+);
 </script>
 
 <template>
@@ -128,6 +132,29 @@ const { me, others } = useUsers("WAKEUP_USER", {
         :fontSize="1.25"
         :letterSpacing="-0.01"
         :color="settings.lineColor.value"
+      />
+    </three-group>
+    <three-group
+      v-for="user in [me, ...others].map((user) => user.settings)"
+      :position="[user.x.value, user.y.value, user.z.value]"
+      :rotation="[user.rotX.value, user.rotY.value, user.rotZ.value]"
+    >
+      <three-geometry
+        :color="user.color.value"
+        :lineColor="settings.lineColor"
+        :width="0.4"
+        :depth="0.4"
+        :height="2"
+        :castShadow="true"
+      />
+      <three-text
+        :text="user.status.value"
+        anchorX="left"
+        anchorY="middle"
+        :fontSize="0.18"
+        :color="isLight(user.color.value) ? '#444' : '#ddd'"
+        :position="[0, -0.8, 0.22]"
+        :rotation="[0, 0, 90]"
       />
     </three-group>
   </ThreeScene>
