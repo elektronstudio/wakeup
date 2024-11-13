@@ -1,48 +1,44 @@
 <script setup lang="ts">
-const useUsers = (messageType: string, initialMe: {}) => {
-  const { messages, sendMessage } = useMessages();
-  const userId = useUserId();
+const { me, others } = useUsers("WAKEUP_USER", { x: 0, y: 0, status: "" });
+const el = ref<HTMLElement | null>(null);
 
-  const me = ref<any>({ userId, ...initialMe });
-  const others = ref<any[]>([]);
+const { centerX, centerY } = useWindowCenter();
 
-  debouncedWatch(
-    me,
-    (updatedMe) => {
-      sendMessage.value({
-        type: messageType,
-        payload: updatedMe,
-      });
-    },
-    { debounce: 100, immediate: true, deep: true }
-  );
+const { x, y } = useDraggable(el, {
+  initialValue: {
+    x: centerX.value - me.value.x,
+    y: centerY.value - me.value.y,
+  },
+});
 
-  watch(messages.value, (updatedMessages) => {
-    const message = updatedMessages[updatedMessages.length - 1];
-    if (
-      message.type === messageType &&
-      message.payload?.userId !== userId.value
-    ) {
-      const otherIndex = others.value?.findIndex((u) => {
-        return u.userId === message.payload?.userId;
-      });
-      if (others.value?.length && otherIndex > -1) {
-        others.value[otherIndex] = message.payload;
-      } else {
-        others.value.push(message.payload);
-      }
-    }
-  });
+watch([x, y], () => {
+  me.value.x = x.value;
+  me.value.y = y.value;
+});
 
-  return { me, others };
-};
-const data = useUsers("WAKEUP_USER", { x: 0, y: 0 });
+const textareaClass =
+  "tracking-loose mt-[7px] w-32 h-64 border-none p-0 resize-none outline-none text-white text-sm bg-transparent leading-tight";
 </script>
 
 <template>
-  <div>
-    <input type="range" v-model.number="data.me.value.x" />
-    <pre>{{ data }}</pre>
-    <!-- <pre>{{ messages.slice(-1) }}</pre> -->
+  <div class="fixed left-4 top-4 pointer-events-none select-none opacity-50">
+    <pre>{{ { me, others } }}</pre>
+  </div>
+  <div
+    v-for="other in others"
+    :key="other.userId"
+    :style="{ left: other.x + 'px', top: other.y + 'px' }"
+    class="fixed transition-all duration-500 ease-in-out flex gap-2"
+  >
+    <Dot class="text-blue-500/90" />
+    <textarea v-model="other.status" :class="textareaClass" readonly />
+  </div>
+  <div
+    ref="el"
+    :style="{ left: x + 'px', top: y + 'px' }"
+    class="fixed cursor-grab flex gap-2"
+  >
+    <Dot class="text-red-500/90" />
+    <textarea v-model="me.status" :class="textareaClass" />
   </div>
 </template>
