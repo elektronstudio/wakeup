@@ -135,6 +135,7 @@ const { me, others } = useUsers("WAKEUP_USER", {
     class="fixed top-0 right-0 bottom-0 w-[250px] bg-black/80 bg-blend-darken p-6"
   >
     <Settings2 v-model="settings" />
+    <Settings2 v-model="me.settings" />
   </div>
   <!-- <Settings /> -->
 </template>
