@@ -31,7 +31,11 @@ const textareaClass =
     class="fixed transition-all duration-500 ease-in-out flex gap-2"
   >
     <Dot class="text-blue-500/90" />
-    <textarea v-model="other.status" :class="textareaClass" readonly />
+    <textarea
+      v-model="other.status"
+      :class="textareaClass + ' opacity-50 pointer-events-none'"
+      readonly
+    />
   </div>
   <div
     ref="el"
