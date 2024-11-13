@@ -197,7 +197,7 @@ const onStart = async () => {
   >
     <video
       src="/asuna.mp4"
-      class="h-full brightness-[0.2]"
+      class="h-full brightness-[0.2] pointer-events-none touch-none"
       muted
       loop
       autoplay
@@ -234,7 +234,11 @@ const onStart = async () => {
     />
   </div>
 
-  <div ref="el" :style="userStyle" class="fixed cursor-grab flex gap-2">
+  <div
+    ref="el"
+    :style="userStyle"
+    class="fixed cursor-grab flex gap-2 select-none touch-none cursor-move"
+  >
     <Dot class="text-red-500/90" @click="onStart" />
     <textarea
       v-model="user.status"

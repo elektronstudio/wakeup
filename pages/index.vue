@@ -37,7 +37,9 @@ const cards = [
 <template>
   <Breadboard />
   <div class="flex flex-col gap-10">
-    <h1 class="text-6xl md:text-7xl tracking-tight">Wake↑up</h1>
+    <NuxtLink to="/users"
+      ><h1 class="text-6xl md:text-7xl tracking-tight">Wake↑up</h1></NuxtLink
+    >
     <div />
     <div class="grid lg:grid-cols-[1fr_2fr] gap-4">
       <Heading class="md:pr-16">
