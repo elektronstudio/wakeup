@@ -6,8 +6,8 @@ const cards = [
     description:
       'First presented in the "Digital spaces for the performing arts" conference in Düsseldorf, a virtual 3D stage.',
     videoLink: "https://www.youtube.com/watch?v=C9Ly7UgsPCA&t=1753s",
-    date: "5 Oct 2020",
-    link: "http://foyer.elektron.studio",
+    date: "Oct 2020",
+    link: "http://wakeup-foyer.elektron.art",
     buttonText: "Go to virtual stage",
     link2: "/foyer",
     buttonText2: "Go to v2",
@@ -16,9 +16,9 @@ const cards = [
     title: "Experience № 2",
     name: "2D Lobby",
     description:
-      "Created for Garage48 hackathon, a virtual lobby for online theater performances, allowing to communicate and listen music together.",
+      "Created for Garage48 hackathon, a virtual lobby for online theater performances, allowing to communicate with each other.",
     videoLink: "https://www.youtube.com/watch?v=ttQ6L5ach3w",
-    date: "Nov 2024",
+    date: "Jan 2021",
     link: "/lobby",
     buttonText: "Go to lobby",
   },
@@ -28,7 +28,7 @@ const cards = [
     description:
       "Based on the virtual lobby idea, a collaborative installation with online users making music together.",
     date: "April 2021",
-    link: "http://synth.elektron.studio",
+    link: "http://wakeup-synth.elektron.art",
     buttonText: "Go to synth",
   },
 ];
@@ -62,7 +62,7 @@ const cards = [
         <p>Note: The experiences are not optimized for mobile screens.</p>
       </div>
     </div>
-    <div class="grid md:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div class="grid md:grid-cols-3 2xl:grid-cols-4 gap-6">
       <Card
         v-for="(card, index) in cards"
         :key="index"
