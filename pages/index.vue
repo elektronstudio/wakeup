@@ -2,41 +2,41 @@
 const cards = [
   {
     title: "Experience № 1",
-    name: "3D Virtual stage",
+    name: "Virtual stage",
     description:
-      'First presented in the "Digital spaces for the performing arts" conference in Düsseldorf, a virtual 3D stage.',
+      'A virtual 3D stage, first presented in the "Digital spaces for the performing arts" conference in Düsseldorf, .',
     videoLink: "https://www.youtube.com/watch?v=C9Ly7UgsPCA&t=1753s",
     date: "Oct 2020",
     link: "http://wakeup-foyer.elektron.art",
-    buttonText: "Go to virtual stage",
+    buttonText: "Single user",
     link2: "/foyer",
-    buttonText2: "Go to v2",
+    buttonText2: "Multiuser",
   },
   {
     title: "Experience № 2",
-    name: "2D Lobby",
+    name: "Multiuser Lobby",
     description:
       "Created for Garage48 hackathon, a virtual lobby for online theater performances, allowing to communicate with each other.",
     videoLink: "https://www.youtube.com/watch?v=ttQ6L5ach3w",
     date: "Jan 2021",
     link: "/lobby",
-    buttonText: "Go to lobby",
+    buttonText: "go to multiuser lobby",
   },
   {
     title: "Experience № 3",
-    name: "Collective synth",
+    name: "Multiuser synth",
     description:
       "Based on the virtual lobby idea, a collaborative installation with online users making music together.",
     date: "April 2021",
     link: "http://wakeup-synth.elektron.art",
-    buttonText: "Go to synth",
+    buttonText: "got to multiuser synth",
   },
 ];
 </script>
 
 <template>
   <Breadboard />
-  <div class="flex flex-col gap-10">
+  <div class="p-4 md:p-6 flex flex-col gap-10">
     <NuxtLink to="/users"
       ><h1 class="text-6xl md:text-7xl tracking-tight">Wake↑up</h1></NuxtLink
     >
@@ -91,9 +91,9 @@ const cards = [
             <a v-if="card.link" :href="card.link" target="_blank">
               <ButtonPrimary>{{ card.buttonText }}</ButtonPrimary>
             </a>
-            <!-- <NuxtLink v-if="card.link2" :to="card.link2" target="_blank">
-            <ButtonPrimary>{{ card.buttonText2 }}</ButtonPrimary>
-          </NuxtLink> -->
+            <NuxtLink v-if="card.link2" :to="card.link2" target="_blank">
+              <ButtonPrimary>{{ card.buttonText2 }}</ButtonPrimary>
+            </NuxtLink>
             <a v-if="card.videoLink" :href="card.videoLink" target="blank">
               <Button>See video</Button>
             </a>

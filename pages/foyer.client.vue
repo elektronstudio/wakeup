@@ -1,8 +1,4 @@
 <script setup>
-definePageMeta({
-  layout: "three",
-});
-
 const defaultSettings = {
   materialColor: {
     title: "Material color",

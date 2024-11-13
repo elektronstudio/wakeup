@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import * as Tone from "tone";
 import { Circle } from "collisions";
-import { useUserId, useUserName } from "~/composables/user";
-
-definePageMeta({
-  layout: "three",
-});
 
 const el = ref<HTMLElement | null>(null);
 
@@ -237,7 +232,7 @@ const onStart = async () => {
   <div
     ref="el"
     :style="userStyle"
-    class="fixed cursor-grab flex gap-2 select-none touch-none cursor-move"
+    class="fixed cursor-grab flex gap-2 select-none touch-none"
   >
     <Dot class="text-red-500/90" @click="onStart" />
     <textarea

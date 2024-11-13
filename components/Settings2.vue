@@ -21,14 +21,14 @@ const settings = useVModel(props, "modelValue", emit);
         />
       </div>
       <div v-if="setting.type === 'textarea'" class="flex flex-col gap-2">
-        <label>{{ setting.title }} {{ setting.value }}</label>
+        <label>{{ setting.title }}</label>
         <textarea
           v-model="setting.value"
           class="bg-black border-2 rounded px-2 py-1 outline-none"
         />
       </div>
       <div v-if="setting.type === 'range'" class="flex flex-col gap-2">
-        <label>{{ setting.title }} {{ setting.value }}</label>
+        <label>{{ setting.title }}</label>
         <input
           type="range"
           v-model.number="setting.value"

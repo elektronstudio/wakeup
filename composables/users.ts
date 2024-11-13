@@ -1,4 +1,8 @@
-export const useUsers = (messageType: string, initialMe: {}, debounce: 100) => {
+export const useUsers = (
+  messageType: string,
+  initialMe: {},
+  debounce = 100
+) => {
   const { messages, sendMessage } = useMessages();
   const userId = useUserId();
 
