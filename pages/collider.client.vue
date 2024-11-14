@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { useCollider, type ColliderBody } from "~/composables/collider";
+import {
+  useCollider,
+  type ColliderBody,
+  type ColliderCircle,
+} from "~/composables/collider";
 
 const { me, others } = useUsers("WAKEUP_USER", {
   x: 0,
   y: 0,
-  r: 15,
   colliding: false,
   status: "",
 });
@@ -24,8 +27,13 @@ watch([x, y], () => {
   me.value.y = y.value;
 });
 
-const defaultBodies: ColliderBody[] = [{ x: 0, y: 0, r: 100, type: "circle" }];
-const { user, bodies } = useCollider(me, defaultBodies);
+const body = computed<ColliderCircle>(() => {
+  return { x: me.value.x, y: me.value.y, r: 15, type: "circle" };
+});
+const bodies = ref<ColliderBody[]>([{ x: 0, y: 0, r: 100, type: "circle" }]);
+const { colliding, collidingBodies } = useCollider(body, bodies);
+
+watchEffect(() => (me.value.colliding = colliding.value));
 
 const textareaClass =
   "tracking-loose mt-[7px] w-32 h-64 border-none p-0 resize-none outline-none text-white text-sm bg-transparent leading-tight";
@@ -33,7 +41,7 @@ const textareaClass =
 
 <template>
   <div class="fixed left-4 top-4 pointer-events-none select-none opacity-50">
-    <pre>{{ { user } }}</pre>
+    <pre>{{ { collidingBodies, colliding, me, others } }}</pre>
   </div>
   <div
     v-for="other in others"
