@@ -10,6 +10,7 @@ type CircleBody = {
   r: number;
   colliding?: boolean;
 };
+
 type LineBody = {
   type: "line";
   x1: number;
@@ -18,6 +19,7 @@ type LineBody = {
   y2: number;
   colliding?: boolean;
 };
+
 type RectBody = {
   type: "rect";
   x: number;
@@ -31,7 +33,7 @@ type Body = CircleBody | LineBody | RectBody;
 
 export function useCollisionDetection(user: Ref<User>, defaultBodies: Body[]) {
   const system = new System();
-  const bodies = ref([]);
+  const bodies = ref<Body[]>([]);
 
   const userCollider = new Circle(
     { x: user.value.x, y: user.value.y },
@@ -61,9 +63,12 @@ export function useCollisionDetection(user: Ref<User>, defaultBodies: Body[]) {
           body.height
         );
       }
-      system.insert(bodyCollider);
+      system.insert(bodyCollider as any);
 
-      const colliding = system.checkCollision(userCollider, bodyCollider);
+      const colliding = system.checkCollision(
+        userCollider,
+        bodyCollider as any
+      );
       if (colliding) {
         user.value.colliding = true;
       }
