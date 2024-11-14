@@ -14,8 +14,6 @@ const { x: defaultX, y: defaultY } = randomCollider(
   height.value / 2
 );
 
-console.log({ defaultX, defaultX2: defaultX - centerX.value, defaultY });
-
 const { me, others } = useUsers("WAKEUP_USER", {
   x: defaultX - centerX.value,
   y: defaultY - centerY.value,
@@ -40,9 +38,11 @@ watch([x, y], () => {
 const body = computed<ColliderCircle>(() => {
   return { x: me.value.x, y: me.value.y, r: 15, type: "circle" };
 });
+
 const bodies = ref<ColliderBody[]>([
   { x: 0, y: 0, r: 100, type: "circle", audio: new Audio("/fertility.mp3") },
 ]);
+
 const { colliding, collidingBodies } = useCollider(body, bodies);
 
 watchEffect(() => (me.value.colliding = colliding.value));
