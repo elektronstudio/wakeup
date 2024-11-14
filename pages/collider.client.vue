@@ -13,7 +13,7 @@ const { me, others } = useUsers("WAKEUP_USER", {
 });
 const el = ref<HTMLElement | null>(null);
 
-const { centerX, centerY } = useWindowCenter();
+const { width, height, centerX, centerY } = useWindowCenter();
 
 const { x, y } = useDraggable(el, {
   initialValue: {
@@ -23,37 +23,77 @@ const { x, y } = useDraggable(el, {
 });
 
 watch([x, y], () => {
-  me.value.x = x.value;
-  me.value.y = y.value;
+  me.value.x = x.value - centerX.value;
+  me.value.y = y.value - centerY.value;
 });
 
 const body = computed<ColliderCircle>(() => {
   return { x: me.value.x, y: me.value.y, r: 15, type: "circle" };
 });
-const bodies = ref<ColliderBody[]>([{ x: 0, y: 0, r: 100, type: "circle" }]);
+const bodies = ref<ColliderBody[]>([
+  { x: 0, y: 0, r: 100, type: "circle", audio: new Audio("/kodak.mp3") },
+]);
 const { colliding, collidingBodies } = useCollider(body, bodies);
 
 watchEffect(() => (me.value.colliding = colliding.value));
 
+watchEffect(() => {
+  collidingBodies.value.forEach((body) => {
+    if (body.type === "circle" && body.audio) {
+      if (body.colliding) {
+        body.audio.play();
+      } else {
+        body.audio.pause();
+      }
+    }
+  });
+});
+
+const viewBox = computed(
+  () =>
+    `-${width.value / 2} -${height.value / 2} ${width.value} ${height.value}`
+);
+
 const textareaClass =
-  "tracking-loose mt-[7px] w-32 h-64 border-none p-0 resize-none outline-none text-white text-sm bg-transparent leading-tight";
+  "duration-500 tracking-loose mt-[7px] w-32 h-64 border-none p-0 resize-none outline-none text-white text-sm bg-transparent leading-tight";
 </script>
 
 <template>
+  <svg class="fixed pointer-events-none w-full h-full" :viewBox="viewBox">
+    <g v-for="body in collidingBodies">
+      <circle
+        v-if="body.type === 'circle'"
+        :cx="body.x"
+        :cy="body.y"
+        :r="body.r"
+        :class="body.colliding ? 'stroke-red-500/60' : 'stroke-neutral-500'"
+        stroke-width="2"
+        fill="none"
+        class="transition-all duration-500"
+      />
+    </g>
+  </svg>
   <div class="fixed left-4 top-4 pointer-events-none select-none opacity-50">
     <pre>{{ { collidingBodies, colliding, me, others } }}</pre>
   </div>
   <div
     v-for="other in others"
     :key="other.userId"
-    :style="{ left: other.x + 'px', top: other.y + 'px' }"
+    :style="{ left: other.x + centerX + 'px', top: other.y + centerY + 'px' }"
     class="fixed transition-all duration-500 ease-in-out flex gap-2"
   >
-    <Dot class="text-blue-500/90" />
+    <Dot
+      class="transition-all duration-500"
+      :class="other.colliding ? 'text-blue-500/60' : 'text-blue-500/90'"
+    />
     <textarea
       v-model="other.status"
-      :class="textareaClass + ' opacity-50 pointer-events-none'"
       readonly
+      :class="[
+        other.colliding ? 'opacity-0' : 'opacity-100',
+        'pointer-events-none',
+        textareaClass,
+      ]"
     />
   </div>
   <div
@@ -61,7 +101,13 @@ const textareaClass =
     :style="{ left: x + 'px', top: y + 'px' }"
     class="fixed flex gap-2 select-none touch-none cursor-grab"
   >
-    <Dot class="text-red-500/90" />
-    <textarea v-model="me.status" :class="textareaClass" />
+    <Dot
+      class="transition-all duration-500"
+      :class="me.colliding ? 'text-red-500/60' : 'text-red-500/90'"
+    />
+    <textarea
+      v-model="me.status"
+      :class="[me.colliding ? 'opacity-0' : 'opacity-100', textareaClass]"
+    />
   </div>
 </template>

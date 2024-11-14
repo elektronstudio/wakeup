@@ -13,6 +13,7 @@ export type ColliderCircle = {
   y: number;
   r: number;
   colliding?: boolean;
+  audio?: HTMLAudioElement;
 };
 
 export type ColliderLine = {
@@ -22,6 +23,7 @@ export type ColliderLine = {
   x2: number;
   y2: number;
   colliding?: boolean;
+  audio?: HTMLAudioElement;
 };
 
 export type ColliderRect = {
@@ -31,6 +33,7 @@ export type ColliderRect = {
   width: number;
   height: number;
   colliding?: boolean;
+  audio?: HTMLAudioElement;
 };
 
 export type ColliderBody = ColliderCircle | ColliderLine | ColliderRect;
