@@ -5,15 +5,25 @@ import {
   type ColliderCircle,
 } from "~/composables/collider";
 
+const { width, height, centerX, centerY } = useWindowCenter();
+
+const { x: defaultX, y: defaultY } = randomCollider(
+  { x: 0, y: 0, r: 15, type: "circle" },
+  [{ x: 0, y: 0, r: 100, type: "circle" }],
+  width.value / 2,
+  height.value / 2
+);
+
+console.log({ defaultX, defaultX2: defaultX - centerX.value, defaultY });
+
 const { me, others } = useUsers("WAKEUP_USER", {
-  x: 0,
-  y: 0,
+  x: defaultX - centerX.value,
+  y: defaultY - centerY.value,
   colliding: false,
   status: "",
 });
-const el = ref<HTMLElement | null>(null);
 
-const { width, height, centerX, centerY } = useWindowCenter();
+const el = ref<HTMLElement | null>(null);
 
 const { x, y } = useDraggable(el, {
   initialValue: {
@@ -31,7 +41,7 @@ const body = computed<ColliderCircle>(() => {
   return { x: me.value.x, y: me.value.y, r: 15, type: "circle" };
 });
 const bodies = ref<ColliderBody[]>([
-  { x: 0, y: 0, r: 100, type: "circle", audio: new Audio("/kodak.mp3") },
+  { x: 0, y: 0, r: 100, type: "circle", audio: new Audio("/fertility.mp3") },
 ]);
 const { colliding, collidingBodies } = useCollider(body, bodies);
 
@@ -108,6 +118,7 @@ const textareaClass =
     <textarea
       v-model="me.status"
       :class="[me.colliding ? 'opacity-0' : 'opacity-100', textareaClass]"
+      :readonly="me.colliding"
     />
   </div>
 </template>

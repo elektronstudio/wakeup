@@ -93,3 +93,47 @@ export function useCollider(
     collidingBodies,
   };
 }
+
+export function randomCollider(
+  myCollider: ColliderCircle,
+  bodies: ColliderBody[],
+  maxX: number,
+  maxY: number
+) {
+  const system = new System();
+  let x = 0;
+  let y = 0;
+
+  const existingColliders = bodies.map((body) => {
+    let bodyCollider;
+    if (body.type === "circle") {
+      bodyCollider = new Circle({ x: body.x, y: body.y }, body.r);
+    } else if (body.type === "line") {
+      bodyCollider = new Line(
+        { x: body.x1, y: body.y1 },
+        { x: body.x2, y: body.y2 }
+      );
+    } else if (body.type === "rect") {
+      bodyCollider = new Box({ x: body.x, y: body.y }, body.width, body.height);
+    }
+    system.insert(bodyCollider as Collider);
+    return bodyCollider as Collider;
+  });
+
+  let collides = true;
+
+  while (collides) {
+    x = random(0, maxX);
+    y = random(0, maxY);
+
+    const myColliderCircle = new Circle(
+      { x: myCollider.x, y: myCollider.y },
+      myCollider.r
+    );
+    collides = existingColliders.some((collider) =>
+      system.checkCollision(myColliderCircle, collider)
+    );
+  }
+
+  return { x, y };
+}
