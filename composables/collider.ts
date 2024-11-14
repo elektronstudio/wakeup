@@ -1,9 +1,15 @@
 import { ref, watchEffect } from "vue";
-import { System, Circle, Line, Box } from "detect-collisions";
+import {
+  System,
+  Circle,
+  Line,
+  Box,
+  type Body as Collider,
+} from "detect-collisions";
 
 type User = { x: number; y: number; r: number; colliding?: boolean };
 
-type CircleBody = {
+type ColliderCircle = {
   type: "circle";
   x: number;
   y: number;
@@ -11,7 +17,7 @@ type CircleBody = {
   colliding?: boolean;
 };
 
-type LineBody = {
+type ColliderLine = {
   type: "line";
   x1: number;
   y1: number;
@@ -20,7 +26,7 @@ type LineBody = {
   colliding?: boolean;
 };
 
-type RectBody = {
+type ColliderRect = {
   type: "rect";
   x: number;
   y: number;
@@ -29,11 +35,11 @@ type RectBody = {
   colliding?: boolean;
 };
 
-type Body = CircleBody | LineBody | RectBody;
+export type ColliderBody = ColliderCircle | ColliderLine | ColliderRect;
 
-export function useCollisionDetection(user: Ref<User>, defaultBodies: Body[]) {
+export function useCollider(user: Ref<User>, defaultBodies: ColliderBody[]) {
   const system = new System();
-  const bodies = ref<Body[]>([]);
+  const bodies = ref<ColliderBody[]>([]);
 
   const userCollider = new Circle(
     { x: user.value.x, y: user.value.y },
@@ -42,11 +48,9 @@ export function useCollisionDetection(user: Ref<User>, defaultBodies: Body[]) {
   system.insert(userCollider);
 
   watchEffect(() => {
-    // Update user collider position
     userCollider.setPosition(user.value.x, user.value.y);
     user.value.colliding = false;
 
-    // Update bodies and check for collisions
     bodies.value = defaultBodies.map((body) => {
       let bodyCollider;
       if (body.type === "circle") {
@@ -63,11 +67,11 @@ export function useCollisionDetection(user: Ref<User>, defaultBodies: Body[]) {
           body.height
         );
       }
-      system.insert(bodyCollider as any);
+      system.insert(bodyCollider as Collider);
 
       const colliding = system.checkCollision(
         userCollider,
-        bodyCollider as any
+        bodyCollider as Collider
       );
       if (colliding) {
         user.value.colliding = true;
