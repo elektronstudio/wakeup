@@ -2,6 +2,7 @@ import ReconnectingWebSocket from "reconnecting-websocket";
 
 export const useMessages = () => {
   const messages = ref<any[]>([]);
+  const latestMessage = ref<any | null>(null);
   const sendMessage = ref((_: any) => {});
   const ws = ref<ReconnectingWebSocket | null>(null);
 
@@ -12,6 +13,7 @@ export const useMessages = () => {
     websocket.addEventListener("message", ({ data }) => {
       const message = JSON.parse(data);
       messages.value.push(message);
+      latestMessage.value = message;
     });
 
     ws.value = websocket;
@@ -24,5 +26,6 @@ export const useMessages = () => {
         })
       );
   });
-  return { messages, sendMessage, ws };
+
+  return { messages, latestMessage, sendMessage, ws };
 };
