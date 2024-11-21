@@ -6,12 +6,14 @@ export const useWebRTC = (
   const remoteStream = ref<MediaStream | null>(null);
   const peerConnection = ref<RTCPeerConnection | null>(null);
   const { latestMessage, sendMessage } = useMessages();
+  const pendingIceCandidates = ref<RTCIceCandidateInit[]>([]);
 
   const initializeConnection = async () => {
     peerConnection.value = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
 
+    // ICE Candidate handling
     peerConnection.value.onicecandidate = (event) => {
       if (event.candidate) {
         sendMessage.value({
@@ -21,17 +23,46 @@ export const useWebRTC = (
       }
     };
 
+    // Track remote stream
     peerConnection.value.ontrack = (event) => {
       if (event.streams[0]) {
         remoteStream.value = event.streams[0];
       }
     };
 
+    // Attach local tracks
     if (localStream.value) {
       localStream.value.getTracks().forEach((track) => {
         peerConnection.value?.addTrack(track, localStream.value!);
       });
     }
+
+    // Signaling state management
+    peerConnection.value.addEventListener("signalingstatechange", () => {
+      const state = peerConnection.value?.signalingState;
+      console.log(`[WebRTC] Signaling state changed to: ${state}`);
+
+      switch (state) {
+        case "stable":
+          console.log(
+            "[WebRTC] Connection is stable. Ready for further signaling."
+          );
+          break;
+        case "have-local-offer":
+          console.log("[WebRTC] Local offer set. Waiting for remote answer.");
+          break;
+        case "have-remote-offer":
+          console.log(
+            "[WebRTC] Remote offer received. Ready to create and send an answer."
+          );
+          break;
+        case "closed":
+          console.log("[WebRTC] Connection closed.");
+          break;
+        default:
+          console.warn("[WebRTC] Unexpected signaling state:", state);
+      }
+    });
   };
 
   const startLocalStream = async () => {
@@ -54,19 +85,65 @@ export const useWebRTC = (
 
   const handleOffer = async (offer: RTCSessionDescriptionInit) => {
     if (!peerConnection.value) await initializeConnection();
-    await peerConnection.value!.setRemoteDescription(offer);
-    const answer = await peerConnection.value!.createAnswer();
-    await peerConnection.value!.setLocalDescription(answer);
-    sendMessage.value({ type: "answer", sdp: answer });
+
+    if (peerConnection.value?.signalingState === "stable") {
+      await peerConnection.value.setRemoteDescription(offer);
+      const answer = await peerConnection.value.createAnswer();
+      await peerConnection.value.setLocalDescription(answer);
+      sendMessage.value({ type: "answer", sdp: answer });
+    } else if (peerConnection.value?.signalingState === "have-local-offer") {
+      console.log(
+        "[WebRTC] Rolling back local offer to handle the new remote offer."
+      );
+      await peerConnection.value.setLocalDescription({ type: "rollback" });
+      await peerConnection.value.setRemoteDescription(offer);
+      const answer = await peerConnection.value.createAnswer();
+      await peerConnection.value.setLocalDescription(answer);
+      sendMessage.value({ type: "answer", sdp: answer });
+    } else {
+      console.error("[WebRTC] Unable to process offer. Unexpected state.");
+    }
   };
 
   const handleAnswer = async (answer: RTCSessionDescriptionInit) => {
-    await peerConnection.value?.setRemoteDescription(answer);
+    if (peerConnection.value?.signalingState === "have-local-offer") {
+      await peerConnection.value.setRemoteDescription(answer);
+    } else {
+      console.warn("[WebRTC] Cannot handle answer in current signaling state.");
+    }
   };
 
   const handleIceCandidate = async (candidate: RTCIceCandidateInit) => {
-    await peerConnection.value?.addIceCandidate(candidate);
+    if (!peerConnection.value) {
+      console.warn(
+        "[WebRTC] PeerConnection not initialized. Queueing candidate."
+      );
+      pendingIceCandidates.value.push(candidate);
+      return;
+    }
+
+    if (peerConnection.value.remoteDescription) {
+      await peerConnection.value.addIceCandidate(candidate);
+      console.log("[WebRTC] ICE candidate added.");
+    } else {
+      console.warn("[WebRTC] Remote description not set. Queueing candidate.");
+      pendingIceCandidates.value.push(candidate);
+    }
   };
+
+  // Process pending ICE candidates once the remote description is set
+  watch(
+    () => peerConnection.value?.remoteDescription,
+    async (remoteDescription) => {
+      if (remoteDescription) {
+        console.log("[WebRTC] Processing queued ICE candidates.");
+        for (const candidate of pendingIceCandidates.value) {
+          await peerConnection.value?.addIceCandidate(candidate);
+        }
+        pendingIceCandidates.value = []; // Clear the queue
+      }
+    }
+  );
 
   // Watch for local and remote streams and assign them to the respective video elements
   watch(localStream, (stream) => {
@@ -85,14 +162,18 @@ export const useWebRTC = (
   watch(latestMessage, (message) => {
     if (!message) return;
 
-    if (message.type === "offer") {
-      handleOffer(message.sdp);
-    }
-    if (message.type === "answer") {
-      handleAnswer(message.sdp);
-    }
-    if (message.type === "ice-candidate") {
-      handleIceCandidate(message.candidate);
+    switch (message.type) {
+      case "offer":
+        handleOffer(message.sdp);
+        break;
+      case "answer":
+        handleAnswer(message.sdp);
+        break;
+      case "ice-candidate":
+        handleIceCandidate(message.candidate);
+        break;
+      default:
+        console.warn("[WebRTC] Unknown message type:", message.type);
     }
   });
 

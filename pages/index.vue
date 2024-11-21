@@ -9,7 +9,7 @@ const cards = [
     date: "Oct 2020",
     link: "http://wakeup-foyer.elektron.art",
     buttonText: "Single user",
-    link2: "/foyer",
+    link2: "/webrtc",
     buttonText2: "Multiuser",
   },
   {
