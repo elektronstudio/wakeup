@@ -2,6 +2,8 @@
 import { Circle, System } from "detect-collisions";
 import { computed, ref, watchEffect } from "vue";
 
+// https://www.npmjs.com/package/svg-intersections
+
 interface Body {
   x: number;
   y: number;
@@ -12,22 +14,25 @@ interface Body {
 interface CollisionDetail {
   type: string;
   distance: number;
+  distanceRatio: number;
 }
 
 interface BodyWithCollisions extends Body {
   colliding: CollisionDetail[];
 }
 
-const x = ref(120);
-
 const bodies = ref<Body[]>([
-  { x: 100, y: 100, radius: 50, type: "user" },
-  { x: 120, y: 100, radius: 50, type: "other" },
-  { x: 140, y: 100, radius: 50, type: "circle" },
+  { x: 120, y: 200, radius: 10, type: "me" },
+  { x: 100, y: 100, radius: 10, type: "other" },
+  { x: 140, y: 100, radius: 50, type: "space" },
 ]);
 
+const y = ref(200);
+const radius = ref(10);
+
 watchEffect(() => {
-  bodies.value[1].x = x.value;
+  bodies.value[1].y = y.value;
+  bodies.value[2].radius = radius.value;
 });
 
 function useCollisions(bodies: Ref<Body[]>): Ref<BodyWithCollisions[]> {
@@ -47,11 +52,14 @@ function useCollisions(bodies: Ref<Body[]>): Ref<BodyWithCollisions[]> {
         .filter((other) => other !== body)
         .map((other) => {
           const { colliding, distance } = isColliding(body, other);
-          return colliding ? { type: other.type, distance } : null;
+          if (colliding) {
+            const maxDistance = body.radius + other.radius;
+            const distanceRatio = distance / maxDistance;
+            return { type: other.type, distance, distanceRatio };
+          }
+          return null;
         })
-        .filter(
-          (collision): collision is CollisionDetail => collision !== null
-        );
+        .filter(Boolean);
 
       return {
         ...body,
@@ -64,8 +72,9 @@ const collisions = useCollisions(bodies);
 </script>
 
 <template>
-  <div>
-    <input type="range" v-model="x" step="1" max="500" />
+  <div class="flex gap-4 p-4">
+    <input type="range" v-model.number="y" step="1" max="500" />
+    <input type="range" v-model.number="radius" step="1" max="500" />
   </div>
   <svg width="500" height="500">
     <circle
@@ -78,5 +87,7 @@ const collisions = useCollisions(bodies);
       fill="none"
     />
   </svg>
-  <pre class="fixed top-0 right-0 w-1/2">{{ collisions }}</pre>
+  <pre class="fixed top-0 right-0 w-1/2 overflow-auto h-full">{{
+    collisions
+  }}</pre>
 </template>
